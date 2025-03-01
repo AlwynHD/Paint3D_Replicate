@@ -1,0 +1,10 @@
+pip install --upgrade pip
+torchvision==0.13.1+cu113
+numpy==1.23.1
+opencv-python==4.6.0.66
+imageio-ffmpeg==0.4.2
+omegaconf==2.1.1
+webdataset==0.2.5
+open_clip_torch==2.0.2
+accelerate==0.29.2
+xatlas==0.0.7

@@ -1,56 +1,26 @@
-# Configuration for Cog ⚙️
 build:
   gpu: true
+  cuda: "11.6"
+  python_version: "3.9"
   system_packages:
     - "libgl1-mesa-glx"
     - "libglib2.0-0"
-    - "git"
-    - "python3-opencv"
-    - "build-essential"
-    - "cmake"
-    - "zip"
-    - "unzip"
-    - "wget"
-  python_version: "3.9"
   python_packages:
-    # Build dependencies (must be first)
-    - "pip>=24.0"
-    - "packaging>=24.0"
-    - "setuptools>=41.0.0"
-    - "wheel"
+    - pip==20.3
   run:
-    # Update pip first
     - pip install --upgrade pip
-    # Install PyTorch and CUDA dependencies first
-    - pip install --no-cache-dir torch==1.12.1+cu116 --extra-index-url https://download.pytorch.org/whl/cu116
-    - pip install --no-cache-dir torchvision==0.13.1+cu116 --extra-index-url https://download.pytorch.org/whl/cu116
-    # Install other dependencies in smaller chunks
-    - pip install --no-cache-dir numpy==1.23.1 
-    - pip install --no-cache-dir opencv-python==4.6.0.66
+    # Install PyTorch and core dependencies separately to manage memory usage
+    - pip install --no-cache-dir torch==1.12.1+cu116 torchvision==0.13.1+cu116 --extra-index-url https://download.pytorch.org/whl/cu116
+    # Install remaining dependencies in smaller batches
+    - pip install --no-cache-dir numpy==1.23.1
+    - pip install --no-cache-dir albumentations==1.3.0 opencv-python==4.6.0.66
     - pip install --no-cache-dir imageio==2.9.0 imageio-ffmpeg==0.4.2
     - pip install --no-cache-dir pytorch-lightning==1.4.2 omegaconf==2.1.1 test-tube>=0.7.5
-    - pip install --no-cache-dir einops==0.3.0 webdataset==0.2.5
-    - pip install --no-cache-dir kornia==0.6 torchmetrics==0.6.0
-    
-    # Critical: Install the specific compatible versions
-    - pip install --no-cache-dir huggingface_hub==0.19.4
-    - pip install --no-cache-dir transformers==4.26.1
-    
-    # Installing diffusers with the correct dependencies
-    - pip install --no-cache-dir diffusers==0.25.0 accelerate==0.29.2
-    
-    - pip install --no-cache-dir loguru==0.7.2 trimesh==3.20.2 
-    - pip install --no-cache-dir xatlas==0.0.7
-    - pip install --no-cache-dir open-clip-torch==2.0.2 invisible-watermark>=0.1.5 streamlit-drawable-canvas==0.8.0 albumentations==1.3.0
-    # Install kaolin
-    - pip install --no-cache-dir kaolin==0.13.0 -f https://nvidia-kaolin.s3.us-east-2.amazonaws.com/torch-1.12.1_cu116.html
+    - pip install --no-cache-dir einops==0.3.0 transformers==4.27.1 webdataset==0.2.5
+    - pip install --no-cache-dir kornia==0.6 open_clip_torch==2.0.2 invisible-watermark>=0.1.5
+    - pip install --no-cache-dir torchmetrics==0.6.0 diffusers==0.25.0 accelerate==0.29.2
+    - pip install --no-cache-dir loguru==0.7.2 trimesh==3.20.2 xatlas==0.0.7
 
-    # Download model files individually to specific locations
-    - python -c "from huggingface_hub import snapshot_download; snapshot_download('GeorgeQi/Paint3d_UVPos_Control', local_dir='/root/.cache/huggingface/hub/GeorgeQi_Paint3d_UVPos_Control')"
-    - python -c "from huggingface_hub import snapshot_download; snapshot_download('runwayml/stable-diffusion-v1-5', local_dir='/root/.cache/huggingface/hub/runwayml_stable-diffusion-v1-5')"
-    - python -c "from huggingface_hub import snapshot_download; snapshot_download('lllyasviel/control_v11f1p_sd15_depth', local_dir='/root/.cache/huggingface/hub/lllyasviel_control_v11f1p_sd15_depth')"
-    - python -c "from huggingface_hub import snapshot_download; snapshot_download('lllyasviel/control_v11p_sd15_inpaint', local_dir='/root/.cache/huggingface/hub/lllyasviel_control_v11p_sd15_inpaint')"
-    - python -c "from huggingface_hub import snapshot_download; snapshot_download('h94/IP-Adapter', local_dir='/root/.cache/huggingface/hub/h94_IP-Adapter', allow_patterns=['models/ip-adapter_sd15.safetensors'])"
-
+# Define your model's prediction interface
 predict: "predict.py:Predictor"
 image: "r8.im/alwynhd/paint3d"
