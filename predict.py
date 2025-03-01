@@ -75,16 +75,10 @@ class Predictor(BasePredictor):
             print(f"Loading models and preparing for inference...")
             
             if pipeline_type == "UV_only":
-                # Explicitly download models before creating the TexturedMeshModel
-                from huggingface_hub import snapshot_download
-                try:
-                    print("Ensuring UV position control model is available...")
-                    uv_pos_model_path = snapshot_download("GeorgeQi/Paint3d_UVPos_Control")
-                    print(f"Downloaded UV position model to: {uv_pos_model_path}")
-                except Exception as download_err:
-                    print(f"Error pre-downloading model: {download_err}")
+                # IMPORTANT: Don't use snapshot_download, use local models
+                # These models should already be downloaded during the build phase
+                print("Setting up UV_only pipeline with pre-downloaded models...")
                 
-                # Simplified UV_only pipeline
                 mesh_model = TexturedMeshModel(cfg=render_cfg, device=self.device).to(self.device)
                 print("Initializing txt2img ControlNet...")
                 UV_cnet = txt2imgControlNet(sd_cfg.txt2img)
