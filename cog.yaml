@@ -11,7 +11,7 @@ build:
     - "zip"
     - "unzip"
     - "wget"
-  python_version: "3.8"
+  python_version: "3.9"
   python_packages:
     # Build dependencies (must be first)
     - "pip>=24.0"
@@ -36,7 +36,7 @@ build:
     - pip install --no-cache-dir huggingface_hub
     - pip install --no-cache-dir transformers==4.26.1
     
-    # Installing diffusers version 0.18.2 as used in the original cog.yaml, but with the correct huggingface_hub version already installed
+    # Installing diffusers with the correct dependencies
     - pip install --no-cache-dir diffusers==0.25.0 accelerate==0.29.2
     
     - pip install --no-cache-dir loguru==0.7.2 trimesh==3.20.2 
@@ -45,8 +45,9 @@ build:
     # Install kaolin
     - pip install --no-cache-dir kaolin==0.13.0 -f https://nvidia-kaolin.s3.us-east-2.amazonaws.com/torch-1.12.1_cu116.html
 
-    - echo 'from huggingface_hub import hf_hub_download, model_info' > /tmp/fixed_import.txt
-    - sed -i 's/from huggingface_hub import cached_download, hf_hub_download, model_info/from huggingface_hub import hf_hub_download, model_info/g' /root/.pyenv/versions/3.8.20/lib/python3.8/site-packages/diffusers/utils/dynamic_modules_utils.py
+    # Fix import issue in diffusers
+    - echo 'from xshuggingface_hub import hf_hub_download, model_info' > /tmp/fixed_import.txt
+    - sed -i 's/from huggingface_hub import cached_download, hf_hub_download, model_info/from huggingface_hub import hf_hub_download, model_info/g' /root/.pyenv/versions/3.9.*/lib/python3.9/site-packages/diffusers/utils/dynamic_modules_utils.py
 
 predict: "predict.py:Predictor"
 image: "r8.im/alwynhd/paint3d"
