@@ -32,7 +32,7 @@ class Predictor(BasePredictor):
             default="stage1"
         ),
         seed: int = Input(description="Random seed", default=42),
-    ) -> list:
+    ) -> list[Path]:  # Update to list[Path] or list[Image]
         """Run texture generation on the provided 3D mesh"""
         
         # Import needed modules
