@@ -72,9 +72,21 @@ class Predictor(BasePredictor):
             outdir.mkdir(exist_ok=True)
             render_cfg.log.exp_path = str(outdir)
             
+            print(f"Loading models and preparing for inference...")
+            
             if pipeline_type == "UV_only":
+                # Explicitly download models before creating the TexturedMeshModel
+                from huggingface_hub import snapshot_download
+                try:
+                    print("Ensuring UV position control model is available...")
+                    uv_pos_model_path = snapshot_download("GeorgeQi/Paint3d_UVPos_Control")
+                    print(f"Downloaded UV position model to: {uv_pos_model_path}")
+                except Exception as download_err:
+                    print(f"Error pre-downloading model: {download_err}")
+                
                 # Simplified UV_only pipeline
                 mesh_model = TexturedMeshModel(cfg=render_cfg, device=self.device).to(self.device)
+                print("Initializing txt2img ControlNet...")
                 UV_cnet = txt2imgControlNet(sd_cfg.txt2img)
                 
                 from pipeline_UV_only import UV_gen
@@ -95,6 +107,7 @@ class Predictor(BasePredictor):
                 # Create models
                 dataloaders = init_dataloaders(render_cfg, self.device)
                 mesh_model = TexturedMeshModel(cfg=render_cfg, device=self.device).to(self.device)
+                print("Initializing depth ControlNet...")
                 depth_cnet = txt2imgControlNet(sd_cfg.txt2img)
                 
                 from pipeline_paint3d_stage1 import gen_init_view
@@ -117,7 +130,9 @@ class Predictor(BasePredictor):
             return results
             
         except Exception as e:
+            import traceback
             print(f"Error in prediction: {e}")
+            print(traceback.format_exc())
             # Create a simple error image
             error_img = Image.new('RGB', (512, 512), color=(255, 0, 0))
             return [error_img]

@@ -33,7 +33,7 @@ build:
     - pip install --no-cache-dir kornia==0.6 torchmetrics==0.6.0
     
     # Critical: Install the specific compatible versions
-    - pip install --no-cache-dir huggingface_hub
+    - pip install --no-cache-dir huggingface_hub==0.19.4
     - pip install --no-cache-dir transformers==4.26.1
     
     # Installing diffusers with the correct dependencies
@@ -45,9 +45,12 @@ build:
     # Install kaolin
     - pip install --no-cache-dir kaolin==0.13.0 -f https://nvidia-kaolin.s3.us-east-2.amazonaws.com/torch-1.12.1_cu116.html
 
-    # Fix import issue in diffusers
-    - echo 'from xshuggingface_hub import hf_hub_download, model_info' > /tmp/fixed_import.txt
-    - sed -i 's/from huggingface_hub import cached_download, hf_hub_download, model_info/from huggingface_hub import hf_hub_download, model_info/g' /root/.pyenv/versions/3.9.*/lib/python3.9/site-packages/diffusers/utils/dynamic_modules_utils.py
+    # Download model files individually
+    - python -c "from huggingface_hub import snapshot_download; snapshot_download('GeorgeQi/Paint3d_UVPos_Control')"
+    - python -c "from huggingface_hub import snapshot_download; snapshot_download('runwayml/stable-diffusion-v1-5')"
+    - python -c "from huggingface_hub import snapshot_download; snapshot_download('lllyasviel/control_v11f1p_sd15_depth')"
+    - python -c "from huggingface_hub import snapshot_download; snapshot_download('lllyasviel/control_v11p_sd15_inpaint')"
+    - python -c "from huggingface_hub import snapshot_download; snapshot_download('h94/IP-Adapter', allow_patterns=['models/ip-adapter_sd15.safetensors'])"
 
 predict: "predict.py:Predictor"
 image: "r8.im/alwynhd/paint3d"
