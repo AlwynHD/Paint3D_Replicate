@@ -17,6 +17,7 @@ os.environ["TRANSFORMERS_CACHE"] = "/tmp/transformers_cache"
 os.environ["HF_HOME"] = "/tmp/hf_home"
 os.environ["TRANSFORMERS_OFFLINE"] = "1" 
 
+
 class Predictor(BasePredictor):
     def setup(self):
         """Load the model into memory to make running multiple predictions efficient"""

@@ -1,6 +1,5 @@
 build:
   gpu: true
-  cuda: "11.6"
   python_version: "3.9"
   system_packages:
     - "libgl1-mesa-glx"
@@ -10,7 +9,7 @@ build:
   run:
     - pip install --upgrade pip
     # Install PyTorch and core dependencies separately to manage memory usage
-    - pip install --no-cache-dir torch==1.12.1+cu116 torchvision==0.13.1+cu116 --extra-index-url https://download.pytorch.org/whl/cu116
+    - pip install --no-cache-dir torch==1.12.1+cu113 torchvision==0.13.1+cu113 --extra-index-url https://download.pytorch.org/whl/cu113
     # Install remaining dependencies in smaller batches
     - pip install --no-cache-dir numpy==1.23.1
     - pip install --no-cache-dir albumentations==1.3.0 opencv-python==4.6.0.66
@@ -23,7 +22,7 @@ build:
     - pip install --no-cache-dir torchmetrics==0.6.0 diffusers==0.25.0 accelerate==0.29.2
     - pip install --no-cache-dir loguru==0.7.2 trimesh==3.20.2 xatlas==0.0.7
     # Install kaolin
-    - pip install kaolin==0.13.0 -f https://nvidia-kaolin.s3.us-east-2.amazonaws.com/torch-1.12.1_cu116.html
+    - pip install kaolin==0.13.0 -f https://nvidia-kaolin.s3.us-east-2.amazonaws.com/torch-1.12.1_cu113.html
 
 # Define your model's prediction interface
 predict: "predict.py:Predictor"
