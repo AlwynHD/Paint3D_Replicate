@@ -8,21 +8,27 @@ build:
     - pip==20.3
   run:
     - pip install --upgrade pip
-    # Install PyTorch and core dependencies separately to manage memory usage
-    - pip install --no-cache-dir torch==2.1.0+cu121 torchvision==0.16.0+cu121 --extra-index-url https://download.pytorch.org/whl/cu121
+    # Force install numpy to a compatible version first and pin it
+    - pip install --no-cache-dir --force-reinstall numpy==1.23.1
+    - pip install --no-cache-dir pip-tools
+    - pip freeze | grep numpy > numpy-constraint.txt
+    # Install PyTorch and core dependencies with numpy constraint
+    - pip install --no-cache-dir -c numpy-constraint.txt torch==2.1.0+cu121 torchvision==0.16.0+cu121 --extra-index-url https://download.pytorch.org/whl/cu121
+    # Install OpenCV separately with constraint
+    - pip install --no-cache-dir -c numpy-constraint.txt opencv-python==4.6.0.66
     # Install remaining dependencies in smaller batches
-    - pip install --no-cache-dir numpy==1.23.1
-    - pip install --no-cache-dir albumentations==1.3.0 opencv-python==4.6.0.66
-    - pip install --no-cache-dir imageio==2.9.0 imageio-ffmpeg==0.4.2
-    - pip install --no-cache-dir pytorch-lightning==1.4.2 omegaconf==2.1.1 test-tube>=0.7.5
-    - pip install --no-cache-dir einops==0.3.0 transformers==4.27.1 webdataset==0.2.5
-    - pip install --no-cache-dir kornia==0.6 open_clip_torch==2.0.2 invisible-watermark>=0.1.5
-    # Fix the huggingface_hub version to be compatible with diffusers
-    - pip install --no-cache-dir huggingface_hub==0.12.1
-    - pip install --no-cache-dir torchmetrics==0.6.0 diffusers==0.25.0 accelerate==0.29.2
-    - pip install --no-cache-dir loguru==0.7.2 trimesh==3.20.2 xatlas==0.0.7
-    # Install kaolin
-    - pip install kaolin==0.15.0 -f https://nvidia-kaolin.s3.us-east-2.amazonaws.com/torch-2.1.0_cu121.html
+    - pip install --no-cache-dir -c numpy-constraint.txt albumentations==1.3.0
+    - pip install --no-cache-dir -c numpy-constraint.txt imageio==2.9.0 imageio-ffmpeg==0.4.2
+    - pip install --no-cache-dir -c numpy-constraint.txt pytorch-lightning==1.4.2 omegaconf==2.1.1 test-tube>=0.7.5
+    - pip install --no-cache-dir -c numpy-constraint.txt einops==0.3.0 transformers==4.27.1 webdataset==0.2.5
+    - pip install --no-cache-dir -c numpy-constraint.txt kornia==0.6 open_clip_torch==2.0.2 invisible-watermark>=0.1.5
+    - pip install --no-cache-dir -c numpy-constraint.txt huggingface_hub==0.25.0
+    - pip install --no-cache-dir -c numpy-constraint.txt torchmetrics==0.6.0 diffusers==0.25.0 accelerate==0.29.2
+    - pip install --no-cache-dir -c numpy-constraint.txt loguru==0.7.2 trimesh==3.20.2 xatlas==0.0.7
+    # Install kaolin with constraint
+    - pip install -c numpy-constraint.txt kaolin==0.15.0 -f https://nvidia-kaolin.s3.us-east-2.amazonaws.com/torch-2.1.0_cu121.html
+    # Final check of numpy version
+    - pip list | grep numpy
 
 # Define your model's prediction interface
 predict: "predict.py:Predictor"

@@ -13,9 +13,9 @@ from omegaconf import OmegaConf
 from cog import BasePredictor, Input, Path as CogPath
 
 # Configure environment variables to avoid HF hub errors
-os.environ["TRANSFORMERS_CACHE"] = "/tmp/transformers_cache"
-os.environ["HF_HOME"] = "/tmp/hf_home"
-os.environ["TRANSFORMERS_OFFLINE"] = "1" 
+# os.environ["TRANSFORMERS_CACHE"] = "/tmp/transformers_cache"
+# os.environ["HF_HOME"] = "/tmp/hf_home"
+# os.environ["TRANSFORMERS_OFFLINE"] = "1" 
 
 
 class Predictor(BasePredictor):
@@ -26,27 +26,6 @@ class Predictor(BasePredictor):
         # Create necessary directories
         os.makedirs("outputs", exist_ok=True)
         os.makedirs("tmp", exist_ok=True)
-        
-        # Fix the huggingface_hub import issue
-        try:
-            import diffusers
-            dynamic_modules_path = os.path.join(os.path.dirname(diffusers.__file__), 'utils', 'dynamic_modules_utils.py')
-            if os.path.exists(dynamic_modules_path):
-                with open(dynamic_modules_path, 'r') as f:
-                    content = f.read()
-                
-                # Replace problematic import with fixed version
-                if 'from huggingface_hub import cached_download' in content:
-                    fixed_content = content.replace(
-                        'from huggingface_hub import cached_download, hf_hub_download, model_info',
-                        'from huggingface_hub import hf_hub_download, model_info\n# Fix for cached_download\ncached_download = hf_hub_download'
-                    )
-                    
-                    with open(dynamic_modules_path, 'w') as f:
-                        f.write(fixed_content)
-                    print(f"Fixed huggingface_hub import issue")
-        except Exception as e:
-            print(f"Warning: Could not fix huggingface_hub import: {e}")
         
         # Add the current directory to the path
         sys.path.append(".")
