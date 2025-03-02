@@ -1,0 +1,15 @@
+Error during texture generation: cannot import name 'cached_download' from 'huggingface_hub' (/root/.pyenv/versions/3.9.19/lib/python3.9/site-packages/huggingface_hub/__init__.py)
+
+Traceback:
+Traceback (most recent call last):
+  File "predict.py", line 66, in predict
+    from controlnet.diffusers_cnet_txt2img import txt2imgControlNet
+  File "/src/controlnet/diffusers_cnet_txt2img.py", line 7, in <module>
+    from diffusers import StableDiffusionControlNetPipeline, ControlNetModel
+  File "/root/.pyenv/versions/3.9.19/lib/python3.9/site-packages/diffusers/__init__.py", line 5, in <module>
+    from .utils import (
+  File "/root/.pyenv/versions/3.9.19/lib/python3.9/site-packages/diffusers/utils/__init__.py", line 37, in <module>
+    from .dynamic_modules_utils import get_class_from_dynamic_module
+  File "/root/.pyenv/versions/3.9.19/lib/python3.9/site-packages/diffusers/utils/dynamic_modules_utils.py", line 28, in <module>
+    from huggingface_hub import cached_download, hf_hub_download, model_info
+ImportError: cannot import name 'cached_download' from 'huggingface_hub' (/root/.pyenv/versions/3.9.19/lib/python3.9/site-packages/huggingface_hub/__init__.py)
