@@ -409,13 +409,13 @@ class Predictor(BasePredictor):
             obj_path = os.path.join(final_dir, "mesh.obj")
             mtl_path = os.path.join(final_dir, "mesh.mtl")
             
-            print(f"Texture generation complete!")
-            
-            return [
-                CogPath(final_texture_path),
-                CogPath(obj_path),
-                CogPath(mtl_path)
-            ]
+            final_zip_path = f"outputs/alwyn_stage2_results.zip"
+            shutil.make_archive(
+                base_name=f"outputs/alwyn_stage2_results",
+                format="zip",
+                root_dir=stage2_dir
+            )
+            return CogPath(final_zip_path)
                         
         except Exception as e:
             # Check if we have stage 1 results to return as fallback
